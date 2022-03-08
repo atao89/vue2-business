@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-02-26 15:53:14
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-07 23:51:30
+ * @LastEditTime: 2022-03-08 22:16:19
  */
 import request from "./request"
 
@@ -22,7 +22,10 @@ export const GetGoodsApi = (params) => request.get("/admin/goods", { params })
 export const GetCategoryApi = (params) => request.get("/admin/category", { params })
 
 // 上传图片
-export const uploadGoodPicApi = (params) => request.post("/admin/upload/goodNewPic", params)
+export const UploadGoodPicApi = (params) => request.post("/admin/upload/goodNewPic", params)
 
 // 查询品牌列表
 export const GetBrandApi = (params) => request.get("/admin/brand", { params })
+
+// 新增/编辑商品
+export const StoreApi = (params) => request.post("/admin/goods/store", params)

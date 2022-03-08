@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-03-07 22:19:58
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-08 00:07:21
+ * @LastEditTime: 2022-03-08 22:42:20
 -->
 <template>
   <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
@@ -16,8 +16,8 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="所属分类" prop="region">
-          <el-select v-model="ruleForm.region" placeholder="请选择所属分类">
+        <el-form-item label="所属分类" prop="category">
+          <el-select v-model="ruleForm.category" placeholder="请选择所属分类">
             <el-option
               v-for="item in categoryList"
               :label="item.name"
@@ -119,13 +119,18 @@
 </template>
 
 <script>
-import { uploadGoodPicApi, GetCategoryApi, GetBrandApi } from "@/request/api";
+import {
+  UploadGoodPicApi,
+  GetCategoryApi,
+  GetBrandApi,
+  StoreApi,
+} from "@/request/api";
 export default {
   data() {
     return {
       activeName: "first",
       ruleForm: {
-        region: "",
+        category: "",
         name: "",
         brand: "",
         desc: "",
@@ -137,7 +142,7 @@ export default {
         sort: "",
       },
       rules: {
-        region: [
+        category: [
           { required: true, message: "请选择所属分类", trigger: "change" },
         ],
         name: [
@@ -168,6 +173,7 @@ export default {
         "X-Nideshop-Token": localStorage.getItem("token"),
       },
       dialogImageUrl: "",
+      imgUrlList: [],
       dialogVisible: false,
       categoryList: [],
       brandList: [],
@@ -184,7 +190,25 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.ruleForm);
+          let params = {
+            attribute: [],
+            brand_id: this.ruleForm.brand,
+            category_id: this.ruleForm.category,
+            gallerys: this.imgUrlList,
+            goods_brief: this.ruleForm.desc,
+            goods_number: this.ruleForm.inventory,
+            goods_unit: this.ruleForm.unit,
+            is_delete: !this.delivery ? 0 : 1,
+            is_hot: this.ruleForm.type.includes("新品") ? 1 : 0,
+            is_new: this.ruleForm.type.includes("人气") ? 1 : 0,
+            list_pic_url: this.imageUrl,
+            name: this.ruleForm.name,
+            primary_pic_url: this.imageUrl,
+            retail_price: this.ruleForm.price,
+            sort_order: this.ruleForm.sort,
+            type: [],
+          };
+          this.savaGood(params);
         }
       });
     },
@@ -210,14 +234,14 @@ export default {
     uploadGoodPic(data) {
       let formdata = new FormData();
       formdata.append("good_pic", data.file);
-      uploadGoodPicApi(formdata).then((res) => {
+      UploadGoodPicApi(formdata).then((res) => {
         if (res.errno === 0) {
           this.imageUrl = res.data.fileUrl;
         }
       });
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -226,15 +250,16 @@ export default {
     uploadGoodAds(data) {
       let formdata = new FormData();
       formdata.append("good_pic", data.file);
-      uploadGoodPicApi(formdata).then((res) => {
+      UploadGoodPicApi(formdata).then((res) => {
         if (res.errno === 0) {
           this.dialogImageUrl = res.data.fileUrl;
+          this.imgUrlList.push(res.data.fileUrl);
         }
       });
     },
     // 获取分类list
-    getCategoryList(){
-        GetCategoryApi({ size: 100 }).then((res) => {
+    getCategoryList() {
+      GetCategoryApi({ size: 100 }).then((res) => {
         if (res.errno === 0) {
           this.categoryList = res.data;
         }
@@ -245,6 +270,14 @@ export default {
       GetBrandApi({ size: 100 }).then((res) => {
         if (res.errno === 0) {
           this.brandList = res.data.data;
+        }
+      });
+    },
+    // 保存
+    savaGood(params) {
+      StoreApi(params).then((res) => {
+        if (res.errno === 0) {
+          this.$router.push("/good");
         }
       });
     },
