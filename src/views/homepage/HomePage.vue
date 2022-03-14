@@ -2,9 +2,9 @@
  * @Descripttion: ''
  * @version: ''
  * @Author: 周涛
- * @Date: 2022-02-26 15:51:06
+ * @Date: 2022-03-14 23:49:42
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-05 22:01:06
+ * @LastEditTime: 2022-03-14 23:51:19
 -->
 <template>
   <el-container>
@@ -20,27 +20,24 @@
       </el-main>
     </el-container>
   </el-container>
-  <!-- <div> -->
-  <!-- 头部 -->
-  <!-- <Header /> -->
-  <!-- 左侧菜单 -->
-  <!-- <Nav /> -->
-  <!-- 中间内容 -->
-  <!-- <Content /> -->
-  <!-- </div> -->
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
 import Header from "./children/Header.vue";
 import Nav from "./children/Nav.vue";
 import Content from "./children/Content.vue";
-export default {
+
+@Component({
   components: {
     Header,
     Nav,
     Content,
   },
-};
+})
+export default class HomePage extends Vue {
+    
+}
 </script>
 
 <style>

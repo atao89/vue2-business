@@ -2,12 +2,12 @@
  * @Descripttion: ''
  * @version: ''
  * @Author: 周涛
- * @Date: 2022-02-26 13:37:16
+ * @Date: 2022-03-13 09:43:32
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-07 22:19:43
+ * @LastEditTime: 2022-03-15 00:21:39
  */
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+import VueRouter, { RouteConfig } from 'vue-router'
 import { GetUserByTokenApi } from '@/request/api'
 import store from '@/store'
 import { SETMENU } from "@/store/mutation-type";
@@ -15,7 +15,7 @@ import { SETMENU } from "@/store/mutation-type";
 // Vue.use调用VueRouter里面的install方法
 Vue.use(VueRouter)
 
-const routes = [
+const routes: Array<RouteConfig> = [
   {
     path: '/login',
     component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue')
@@ -56,9 +56,9 @@ const router = new VueRouter({
 // 生成动态路由方法
 const generateRoute = () => {
   // 把登录后的权限菜单列表和路由进行对比，得到用户路由规则，动态添加路由
-  let newRoutes = []
+  let newRoutes: Array<any> = []
   for (var i = 0, len = store.state.menu.length; i < len; i++) {
-    let path = store.state.menu[i].path;
+    let path = store.state.menu[i]['path'];
     if (routerObj[path]) {
       newRoutes.push(routerObj[path])
     }
@@ -74,7 +74,7 @@ const generateRoute = () => {
 router.beforeEach((to, from, next) => {
   let token = localStorage.getItem('token');
   if (token && store.state.menu.length === 0) {
-    GetUserByTokenApi().then(res => {
+    GetUserByTokenApi({}).then((res: Ajax.AjaxRsp) => {
       if (res.errno === 0) {
         // 设置vuex权限列表
         store.commit(SETMENU, res.data.menu);
@@ -84,7 +84,7 @@ router.beforeEach((to, from, next) => {
     })
   } else if (token && store.state.menu.length !== 0 && from.path == '/login' && to.path === '/') {
     generateRoute()
-    next(store.state.menu[0].path)
+    next(store.state.menu[0]['path'])
   }
   else if (!token && to.path !== '/login') {
     next('/login')

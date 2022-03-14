@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-02-26 16:36:24
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-05 22:10:19
+ * @LastEditTime: 2022-03-14 23:52:57
 -->
 <template>
   <div class="content">
@@ -20,12 +20,13 @@
   </div>
 </template>
 
-<script>
-export default {
-  datat() {
-    return {};
-  },
-};
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+@Component
+export default class Content extends Vue {
+    
+}
 </script>
 
 <style lang="less" scoped>

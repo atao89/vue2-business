@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-02-26 16:36:16
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-05 23:47:49
+ * @LastEditTime: 2022-03-15 00:29:51
 -->
 <template>
   <el-menu
@@ -35,83 +35,82 @@
   </el-menu>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      menuConfig: [
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+@Component
+export default class Header extends Vue {
+  menuConfig: Array<any> = [
+    {
+      title: "商品管理",
+      subs: [
         {
-          title: "商品管理",
-          subs: [
-            {
-              title: "商品列表",
-              path: "/good",
-            },
-            {
-              title: "商品分类",
-              path: "/category",
-            },
-            {
-              title: "品牌管理",
-              path: "/brand",
-            },
-            {
-              title: "商品属性管理",
-              path: "/attribute",
-            },
-          ],
+          title: "商品列表",
+          path: "/good",
         },
         {
-          title: "订单中心",
-          subs: [
-            {
-              title: "订单列表",
-              path: "/order",
-            },
-          ],
+          title: "商品分类",
+          path: "/category",
         },
         {
-          title: "店铺运营",
-          subs: [
-            {
-              title: "专题管理",
-              path: "/topic",
-            },
-            {
-              title: "运营数据",
-              path: "/statdata",
-            },
-          ],
+          title: "品牌管理",
+          path: "/brand",
+        },
+        {
+          title: "商品属性管理",
+          path: "/attribute",
         },
       ],
-      newMenu: [],
-    };
-  },
-  computed: {
-    currentSelect() {
-      let goodArr = ["/good", "/addgood", "/editgood"];
-      let categoryArr = ["/category", "/addcategory", "/editcategory"];
-      let brandArr = ["/brand", "/addbrand", "/editbrand"];
-      let topicArr = ["/topic", "addtopic", "/edittopic"];
-      let attributeArr = ["/attribute", "addattribute", "/editattribute"];
-      if (goodArr.includes(this.$route.path)) {
-        return goodArr[0];
-      } else if (categoryArr.includes(this.$route.path)) {
-        return categoryArr[0];
-      } else if (brandArr.includes(this.$route.path)) {
-        return brandArr[0];
-      } else if (topicArr.includes(this.$route.path)) {
-        return topicArr[0];
-      } else if (attributeArr.includes(this.$route.path)) {
-        return attributeArr[0];
-      }
-      return this.$route.path;
     },
-  },
+    {
+      title: "订单中心",
+      subs: [
+        {
+          title: "订单列表",
+          path: "/order",
+        },
+      ],
+    },
+    {
+      title: "店铺运营",
+      subs: [
+        {
+          title: "专题管理",
+          path: "/topic",
+        },
+        {
+          title: "运营数据",
+          path: "/statdata",
+        },
+      ],
+    },
+  ];
+  newMenu: Array<any> = [];
+
+  get currentSelect() {
+    let goodArr = ["/good", "/addgood", "/editgood"];
+    let categoryArr = ["/category", "/addcategory", "/editcategory"];
+    let brandArr = ["/brand", "/addbrand", "/editbrand"];
+    let topicArr = ["/topic", "addtopic", "/edittopic"];
+    let attributeArr = ["/attribute", "addattribute", "/editattribute"];
+    if (goodArr.includes(this.$route.path)) {
+      return goodArr[0];
+    } else if (categoryArr.includes(this.$route.path)) {
+      return categoryArr[0];
+    } else if (brandArr.includes(this.$route.path)) {
+      return brandArr[0];
+    } else if (topicArr.includes(this.$route.path)) {
+      return topicArr[0];
+    } else if (attributeArr.includes(this.$route.path)) {
+      return attributeArr[0];
+    }
+    return this.$route.path;
+  }
+
   created() {
     let menu = this.$store.state.menu;
     // 把vuex里面的权限列表转换成对象
-    let menuObj = menu.reduce((prev, current) => {
+    let menuObj = menu.reduce((prev: Array<any>, current: any) => {
       prev[current.path] = current;
       return prev;
     }, {});
@@ -138,8 +137,8 @@ export default {
         });
       }
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="less" scoped>

@@ -1,4 +1,4 @@
-# vue2-business
+# vue2-ts-element
 
 ## Project setup
 ```

@@ -1,22 +1,41 @@
-<!--
- * @Descripttion: ''
- * @version: ''
- * @Author: 周涛
- * @Date: 2022-02-26 13:37:16
- * @LastEditors: 周涛
- * @LastEditTime: 2022-03-05 19:24:05
--->
 <template>
   <div id="app">
+    <!-- <img src="./assets/logo.png" />
+    <div>
+      <p>
+        {{ str }}
+        <code v-text="'<el-button>'"></code>
+        below
+      </p>
+      <el-button @click="handleClick">el-button</el-button>
+    </div>
+    <HelloWorld msg="Welcome to Your Vue.js App" /> -->
     <router-view></router-view>
   </div>
 </template>
 
-<script>
-export default {
-  name: "app",
-  components: {},
-};
+<script lang="ts">
+// import HelloWorld from "./components/HelloWorld.vue";
+import { Component, Vue } from "vue-property-decorator";
+
+@Component({
+  // components: {
+  //   HelloWorld,
+  // },
+  filters: {},
+  directives: {},
+})
+export default class App extends Vue {
+  // private str: string =
+  //   "If Element is successfully added to this project, you'll see an";
+  // private handleClick(): void {
+  //   console.log("handleClick");
+  // }
+  // created生命周期
+  created() {
+    // console.log("created生命周期");
+  }
+}
 </script>
 
 <style>

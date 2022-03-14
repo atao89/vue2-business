@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-02-26 16:36:00
  * @LastEditors: 周涛
- * @LastEditTime: 2022-02-28 22:39:49
+ * @LastEditTime: 2022-03-15 00:45:27
 -->
 <template>
   <div class="header">
@@ -28,28 +28,29 @@
   </div>
 </template>
 
-<script>
-export default {
-  datat() {
-    return {};
-  },
-  methods: {
-    handleCommand(command) {
-      this.$confirm("此操作将退出系统, 是否继续?", "提示", {
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import { SETMENU } from "@/store/mutation-type";
+
+@Component
+export default class Header extends Vue {
+  handleCommand(command: string): void {
+    (this as any)
+      .$confirm("此操作将退出系统, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          localStorage.removeItem("token");
-          this.$router.push("/login");
-        })
-        .catch(() => {
-          return;
-        });
-    },
-  },
-};
+      .then(() => {
+        this.$store.commit(SETMENU, []);
+        localStorage.removeItem("token");
+        this.$router.push("/login");
+      })
+      .catch(() => {
+        return;
+      });
+  }
+}
 </script>
 
 <style lang="less" scoped>

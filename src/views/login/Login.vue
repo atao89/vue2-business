@@ -2,9 +2,9 @@
  * @Descripttion: ''
  * @version: ''
  * @Author: 周涛
- * @Date: 2022-02-26 14:53:49
+ * @Date: 2022-03-13 12:01:26
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-03 23:42:09
+ * @LastEditTime: 2022-03-13 18:16:48
 -->
 <template>
 <div class="login">
@@ -31,76 +31,79 @@
         autocomplete="off"
       ></el-input>
     </el-form-item>
-      <el-button style="width: 100%" type="primary" @click="submitForm('ruleForm')">登录</el-button>
+      <el-button style="width: 100%" type="primary" @click="submitForm">登录</el-button>
     </el-form-item>
   </el-form>
 </div>
 </template>
 
-<script>
+<script lang="ts">
+import { ElForm } from "element-ui/types/form";
+import { Component, Vue, Ref } from "vue-property-decorator";
 import { LoginApi } from "@/request/api";
-import { SETMENU } from "@/store/mutation-type";
-export default {
-  data() {
-    return {
-      ruleForm: {},
-      rules: {
-        username: [
-          { required: true, message: "账号不能为空", trigger: "blur" },
-          { validator: this.valiName, trigger: "blur" },
-        ],
-        password: [
-          { required: true, message: "密码不能为空", trigger: "blur" },
-        ],
-      },
-    };
-  },
-  methods: {
-    // 校验username
-    valiName(rule, value, callback) {
-      if (value.length < 3 || value.length > 20) {
-        callback("账号长度3-20个字符");
-      } else {
-        callback();
-      }
-    },
 
-    // 登录
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          // 实现登录
-          LoginApi({
-            username: this.ruleForm.username,
-            password: this.ruleForm.password,
-          })
-            .then((res) => {
-              if (res.errno === 0) {
-                // 储存token
-                localStorage.setItem("token", res.data.token);
-                this.$store.commit(SETMENU, res.data.menu);
-                // 跳转
-                // this.$router.push(
-                //   "/",
-                //   (complete) => {},
-                //   (err) => {
-                //     // console.log(err); // 捕获路由报错,不输出到页面
-                //   }
-                // );
-                
-                this.$router.push("/").catch((err) => {
-                  // console.log(err)
-                });
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+interface UserInfo {
+  username: string;
+  password: string;
+}
+
+interface RulesObj {
+  required: boolean;
+  message: string;
+  trriger: string;
+}
+
+// 网络请求的返回值接口
+// interface AjaxRsp {
+//     errno: number;
+//     errmsg: string;
+//     data: any
+// }
+// 使用全局定义
+
+@Component
+export default class Login extends Vue {
+  // 直接定义
+  //   ruleForm: { username: string; password: string } = {
+  //     username: "",
+  //     password: "",
+  //   };
+  // 使用接口定义
+  ruleForm: UserInfo = { username: "", password: "" };
+  readonly rules: { username: Array<RulesObj>; password: Array<RulesObj> } = {
+    username: [{ required: true, message: "用户名不能为空", trriger: "blur" }],
+    password: [{ required: true, message: "密码不能为空", trriger: "blur" }],
+  };
+
+  @Ref("ruleForm") readonly ruleFormRef!: ElForm;
+  // 响应登录按钮
+  submitForm(): void {
+    this.ruleFormRef.validate(async (valid: boolean) => {
+      if (valid) {
+        // 发送网络请求
+        // LoginApi({
+        //   username: this.ruleForm.username,
+        //   password: this.ruleForm.password,
+        // }).then((res: Ajax.AjaxRsp) => {
+        //   res.errno
+        // });
+
+        // 使用anync、await
+        let { errno, errmsg, data }: Ajax.AjaxRsp = await LoginApi({
+          username: this.ruleForm.username,
+          password: this.ruleForm.password,
+        });
+        if (errno === 0) {
+          // 登录成功
+          localStorage.setItem("token", data.token);
+          this.$router.push("/");
+        } else {
+          (this as any).$message.error(errmsg);
         }
-      });
-    },
-  },
-};
+      }
+    });
+  }
+}
 </script>
 
 <style lang="less">

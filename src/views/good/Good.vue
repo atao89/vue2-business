@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-03-03 02:17:50
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-07 22:21:04
+ * @LastEditTime: 2022-03-15 00:51:41
 -->
 <template>
   <div class="good">
@@ -24,12 +24,14 @@
       <el-table-column
         :prop="column.prop"
         :label="column.label"
-        v-for="column in columns1"
+        v-for="(column, index) in columns1"
+        :key="index"
       ></el-table-column>
       <el-table-column
         :prop="column.prop"
         :label="column.label"
-        v-for="column in columnsSlot"
+        v-for="(column, index) in columnsSlot"
+        :key="index"
       >
         <template v-slot="scope">
           {{ scope.row[column.prop] ? "是" : "否" }}
@@ -38,7 +40,8 @@
       <el-table-column
         :prop="column.prop"
         :label="column.label"
-        v-for="column in columns2"
+        v-for="(column, index) in columns2"
+        :key="index"
       ></el-table-column>
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
@@ -61,111 +64,109 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
 import { GetGoodsApi } from "@/request/api";
-export default {
-  data() {
-    return {
-      formInline: {
-        name: "",
-      },
-      tableData: [],
-      columns1: [
-        {
-          prop: "category_id",
-          label: "ID",
-        },
-        {
-          prop: "name",
-          label: "商名称",
-        },
-        {
-          prop: "retail_price",
-          label: "售价",
-        },
-        {
-          prop: "goods_number",
-          label: "库存",
-        },
-      ],
-      columnsSlot: [
-        {
-          prop: "is_new",
-          label: "新品",
-        },
-        {
-          prop: "is_hot",
-          label: "人气",
-        },
-        {
-          prop: "is_on_sale",
-          label: "上架",
-        },
-      ],
-      columns2: [
-        {
-          prop: "sort_order",
-          label: "排序",
-        },
-      ],
-      currentPage: 1,
-      pageSize: 10,
-      total: 0,
-    };
-  },
+
+@Component
+export default class Good extends Vue {
+  formInline: any = {
+    name: "",
+  };
+  tableData: Array<any> = [];
+  columns1: Array<any> = [
+    {
+      prop: "category_id",
+      label: "ID",
+    },
+    {
+      prop: "name",
+      label: "商名称",
+    },
+    {
+      prop: "retail_price",
+      label: "售价",
+    },
+    {
+      prop: "goods_number",
+      label: "库存",
+    },
+  ];
+  columnsSlot: Array<any> = [
+    {
+      prop: "is_new",
+      label: "新品",
+    },
+    {
+      prop: "is_hot",
+      label: "人气",
+    },
+    {
+      prop: "is_on_sale",
+      label: "上架",
+    },
+  ];
+  columns2: Array<any> = [
+    {
+      prop: "sort_order",
+      label: "排序",
+    },
+  ];
+  currentPage: number = 1;
+  pageSize: number = 10;
+  total: number = 0;
   created() {
     this.getGoodsList();
-  },
-  methods: {
-    // 查询
-    handleSerch() {
-      if (this.formInline.name.trim()) {
-        this.getGoodsList();
+  }
+
+  // 查询
+  handleSerch() {
+    if (this.formInline.name.trim()) {
+      this.getGoodsList();
+    }
+  }
+  // 添加
+  handleAdd() {
+    this.$router.push("/addgood");
+  }
+  // 重置
+  handleReset(formName: string): void {
+    (this as any).$refs[formName].resetFields();
+    this.currentPage = 1;
+    this.pageSize = 10;
+    this.getGoodsList();
+  }
+  // pageSize 改变时会触发-每页条数
+  handleSizeChange(size: number) {
+    // console.log(`每页 ${size} 条`);
+    this.pageSize = size;
+    this.getGoodsList();
+  }
+  // currentPage 改变时会触发-当前页
+  handleCurrentChange(page: number) {
+    // console.log(`当前页: ${page}`);
+    this.currentPage = page;
+    this.getGoodsList();
+  }
+  // 编辑
+  editHandle(row: object) {
+    // console.log("row-", row);
+    this.$router.push("/editgood");
+  }
+  // 获取商品列表
+  getGoodsList() {
+    GetGoodsApi({
+      page: this.currentPage + "",
+      size: this.pageSize + "",
+      name: this.formInline.name || "",
+    }).then((res) => {
+      if (res.errno === 0) {
+        this.tableData = res.data.data;
+        this.total = res.data.count;
       }
-    },
-    // 添加
-    handleAdd() {
-      this.$router.push("/addgood");
-    },
-    // 重置
-    handleReset(formName) {
-      this.$refs[formName].resetFields();
-      this.currentPage = 1;
-      this.pageSize = 10;
-      this.getGoodsList();
-    },
-    // pageSize 改变时会触发-每页条数
-    handleSizeChange(size) {
-      // console.log(`每页 ${size} 条`);
-      this.pageSize = size;
-      this.getGoodsList();
-    },
-    // currentPage 改变时会触发-当前页
-    handleCurrentChange(page) {
-      // console.log(`当前页: ${page}`);
-      this.currentPage = page;
-      this.getGoodsList();
-    },
-    // 编辑
-    editHandle(row) {
-      console.log("row-", row);
-      this.$router.push("/editgood");
-    },
-    // 获取商品列表
-    getGoodsList() {
-      GetGoodsApi({
-        page: this.currentPage,
-        size: this.pageSize,
-        name: this.formInline.name || "",
-      }).then((res) => {
-        if (res.errno === 0) {
-          this.tableData = res.data.data;
-          this.total = res.data.count;
-        }
-      });
-    },
-  },
-};
+    });
+  }
+}
 </script>
 
 <style lang="less" scoped>
