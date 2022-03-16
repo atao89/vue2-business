@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-03-13 12:01:26
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-13 18:16:48
+ * @LastEditTime: 2022-03-16 22:38:06
 -->
 <template>
 <div class="login">
@@ -96,7 +96,7 @@ export default class Login extends Vue {
         if (errno === 0) {
           // 登录成功
           localStorage.setItem("token", data.token);
-          this.$router.push("/");
+          this.$router.push("/").catch(() => {});
         } else {
           (this as any).$message.error(errmsg);
         }

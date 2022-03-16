@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-03-03 02:17:50
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-15 00:51:41
+ * @LastEditTime: 2022-03-16 22:26:39
 -->
 <template>
   <div class="good">
@@ -25,13 +25,11 @@
         :prop="column.prop"
         :label="column.label"
         v-for="(column, index) in columns1"
-        :key="index"
       ></el-table-column>
       <el-table-column
         :prop="column.prop"
         :label="column.label"
         v-for="(column, index) in columnsSlot"
-        :key="index"
       >
         <template v-slot="scope">
           {{ scope.row[column.prop] ? "是" : "否" }}
@@ -41,7 +39,6 @@
         :prop="column.prop"
         :label="column.label"
         v-for="(column, index) in columns2"
-        :key="index"
       ></el-table-column>
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">

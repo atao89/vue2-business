@@ -4,7 +4,7 @@
  * @Author: 周涛
  * @Date: 2022-03-13 09:43:32
  * @LastEditors: 周涛
- * @LastEditTime: 2022-03-15 00:21:39
+ * @LastEditTime: 2022-03-16 22:44:48
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -37,7 +37,11 @@ const routerObj = {
   },
   '/category': {
     path: '/category',
-    component: () => import(/* webpackChunkName: "order" */ '../views/category/Category.vue'),
+    component: () => import(/* webpackChunkName: "category" */ '../views/category/Category.vue'),
+  },
+  '/brand': {
+    path: '/brand',
+    component: () => import(/* webpackChunkName: "brand" */ '../views/brand/Brand.vue'),
   },
   '/attribute': {
     path: '/attribute',
@@ -46,6 +50,14 @@ const routerObj = {
   '/order': {
     path: '/order',
     component: () => import(/* webpackChunkName: "order" */ '../views/order/Order.vue'),
+  },
+  '/topic': {
+    path: '/topic',
+    component: () => import(/* webpackChunkName: "topic" */ '../views/topic/Topic.vue'),
+  },
+  '/statdata': {
+    path: '/statdata',
+    component: () => import(/* webpackChunkName: "statdata" */ '../views/statdata/Statdata.vue'),
   },
 }
 
